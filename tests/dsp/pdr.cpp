@@ -10,6 +10,9 @@
 
 #include <gtest/gtest.h>
 
+constexpr uint32_t HOST_PDR_START_RANGE = 0x01000000;
+constexpr uint32_t HOST_PDR_END_RANGE = 0x01FFFFFF;
+
 TEST(PDRAccess, testInit)
 {
     auto repo = pldm_pdr_init();
@@ -449,7 +452,8 @@ TEST(FindContainerID, testValidInstanceID)
     int rc = pldm_pdr_add(repo, data.get(), size, false, 0, &record_handle);
     ASSERT_EQ(rc, 0);
 
-    uint16_t result = pldm_find_container_id(repo, 1, 2);
+    uint16_t result = pldm_find_container_id(repo, 1, 2, HOST_PDR_START_RANGE,
+                                             HOST_PDR_END_RANGE);
     EXPECT_EQ(result, 42);
 
     pldm_pdr_destroy(repo);
@@ -482,7 +486,8 @@ TEST(FindContainerID, testInvalidInstanceID)
     int rc = pldm_pdr_add(repo, data.get(), size, false, 0, &record_handle);
     ASSERT_EQ(rc, 0);
 
-    uint16_t result = pldm_find_container_id(repo, 3, 4);
+    uint16_t result = pldm_find_container_id(repo, 3, 4, HOST_PDR_START_RANGE,
+                                             HOST_PDR_END_RANGE);
     EXPECT_EQ(result, 0);
     pldm_pdr_destroy(repo);
 }
